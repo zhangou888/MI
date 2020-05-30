@@ -1,0 +1,688 @@
+---
+title: "Measurement Invariance"
+subtitle: "A Theoretical Framework of MI in CFA"
+author: "Ou Zhang"
+date: "2014/06/12 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/sfah.css", "css/fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "https://platform.twitter.com/widgets.js"
+    seal: false 
+    includes:
+      in_header: header.html
+---
+```{r set-global-options, echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, 
+                      echo = FALSE, 
+                      cache = FALSE,
+                      include = TRUE,
+                      collapse = FALSE,
+                      dependson = NULL,
+                      engine = "R", # Chunks will always have R code, unless noted
+                      error = TRUE)
+```
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+# options(knitr.table.format = "html")
+library(devtools)
+# install_github("rstudio/fontawesome")
+# install_github("hadley/emo")
+# install_github("muan/emojilib")
+library(tidyverse)
+library(fontawesome) # from github: https://github.com/rstudio/fontawesome
+library(DiagrammeR)
+library(emo)
+```
+
+layout: true
+  
+<div class="my-footer"><span>ouzhang.me/talk/measurement_invariance</span></div>
+
+<!-- this adds the link footer to all slides, depends on my-footer class in css-->
+
+---
+name: xaringan-title
+class: left, middle
+background-image: url(img/front1.jpg)
+background-size: cover
+
+# Measurement Invariance
+
+### .fancy[A Theoretical Framework of MI in CFA]
+
+.large[Ou Zhang | Psychometrics conf::2014]
+
+<!-- this ends up being the title slide since seal = FALSE-->
+
+---
+class: right, middle
+
+<img class="circle" src="img/Ou_Zhang.jpg" width="150px"/>
+
+# Find me at...
+
+[`r fa(name = "twitter")` @zhangou](http://twitter.com/zhangou888)  
+[`r fa(name = "github")` @zhangou](http://github.com/zhangou888)  
+[`r fa(name = "link")` ouzhang.me](https://ouzhang.me)  
+[`r fa(name = "paper-plane")` zhangou888@gmail.com](mailto:zhangou888@gmail.com)
+
+---
+
+## .center[Today's Topic]
+
+--
+
+What is measurement invariance?
+
+--
+
+What matrix we use for measurement invariance analysis?
+
+--
+
+2 Major types of factorial invariance
+
+--
+
+ * Measurement and Structural
+
+--
+
+Sequence of tests for measurement invariance
+
+---
+name: what is mi?
+class: center, inverse, middle
+
+# .fancy[What is measurement invariance?]
+
+---
+
+name: definition title
+class: center,inverse
+background-image: url(img/front2.jpg)
+background-size: cover
+
+## Definition
+
+--
+
+### Measurement Invariance (MI), aka **“factorial invariance”** and **“measurement equivalence”**, concerns the extent to which are the psychometric properties of the observed indicators are transportable (generalizable) across groups or over time/condition (longitudinal study).
+
+
+---
+
+## .center[What is measurement invariance (cont.)]
+
+--
+
+- Are we measuring the same construct in the same way in different groups or over time/condition?
+
+--
+
+- Observed scores should depend only on latent construct scores, and not on group membership or occasion
+
+--
+
+- Observed differences between groups reflect **TRUE** differences in the amount or variability of the construct
+
+--
+
+- Relevant concern in many applied settings  
+
+  - e.g., across cultures, language, age, modality
+
+---
+## .center[Most common approach for MI]
+
+--
+
+### Nested Model Comparisons in CFA
+
+--
+
+Most common approach for assessing change in model fit is the <span style="color: red;"> likelihood ratio test <span/> (aka, ‐2ΔLL deviance difference test)
+
+--
+
+- Implemented via direct difference in model $\chi^2$ values most often, but this is only appropriate when using regular ML estimation
+
+--
+
+- If adding a parameter, model fit can be **better** or **not better** (such as when adding factors, error covariances, etc)
+
+--
+
+- If removing a parameter, model fit can be **worse** or **not worse**
+
+---
+name: model comparison likelihood
+
+## .center[Model Comparison via -2ΔLL]
+
+--
+
+### Comparing nested models via a **"likelihood ratio test"**
+
+$-2\Delta LL$ (MLR rescaled version)
+  
+--
+
+* Step 1:  Calculate $-2\Delta LL = -2  \times (LL_{fewer} - LL_{more})$
+
+--
+
+* Step 2: Calculate $\Delta df = parms_{more} – parms_{fewer}$
+
+--
+
+* Step 3: Compare rescaled difference to $\chi^2$ with $df = \Delta df$
+
+--
+
+  - Add 1 parameter: $\Delta LL_{diff} > 3.84$,
+
+--
+
+  - Add 2 parameters: $\Delta LL_{diff} > 5.99$
+
+---
+## .center[What matrix we use for MI - scale]
+
+--
+
+Example:
+
+--
+
+- Suppose we measure height in inches for two groups. We can compare height difference between two groups because both group use the same height scale (inch/cm).
+
+- The hypothetical results are: 
+
+```{r fig1, out.width='50%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/scale_example1.PNG", error = FALSE)
+
+```
+--
+
+- Now if we calculate height z-score for every individual in the group
+
+```{r fig2, out.width='35%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/scale_example2.PNG", error = FALSE)
+
+```
+
+--
+
+- Are two new results (the z-score variables) on the same scale at both occasions? 
+
+--
+
+ - No, because two groups have different SDs.
+
+---
+name: what matrix?
+class: center, inverse, middle
+
+# .fancy[What matrix we use for MI?]
+
+---
+## .center[What matrix we use for MI]
+
+--
+
+- Is it Correlation matrix?
+
+--
+
+- Is it Covariance matrix? 
+
+--
+
+The correct matrix we use for MI is 
+
+## .center[<span style="color: red;">**Covariance matrix**<span/>]
+
+
+---
+## .center[2 Major types of factorial invariance]
+
+--
+
+There are two types of factorial invariance:
+
+--
+
+- <span style="color: red;">**measurement invariance**<span/>
+
+--
+
+- <span style="color: red;">**structural invariance**<span/>
+
+---
+name: mi2
+class: center, inverse, middle
+
+# .fancy[Measurement invariance vs. Structural invariance]
+
+---
+## .center[Measurement invariance]
+
+--
+
+**Measurement invariance** concerns how the items measure the latent construct across groups or over time
+
+--
+
+- Measurement model invariance: same factor loadings, same item intercepts, (possibly) same residual (co)variances
+
+--
+
+- **Measurement model invariance is a precursor to ANY group comparison**   
+    (whether it is tested/acknowledged or not)
+
+--
+
+Measurement invariance is often **assumed, not tested**
+
+--
+
+- Even a t‐test assumes measurement invariance
+- Model changes overtime while assuming measurement invariance
+- People tend to accept this assumption unless they try to use a factor model…then they usually insist on testing invariance
+
+---
+## .center[Structural invariance]
+
+--
+
+**Structural invariance** concerns how the latent factors are distributed and related in the separate populations
+ 
+--
+
+- Structural model invariance: same factor variances and covariances (or same higher‐order structure) and factor means
+
+--
+
+- Structural invariance may not hold… and that’s ok
+  - Assuming measurement invariance holds, structural invariance represents 'real' differences in the construct across groups/time
+
+  - Structural non‐invariance does not indicate a problem with the instrument– group structural differences may be of interest
+
+--
+
+        - e.g., real growth of factors over time
+        - e.g., differentiation or de‐differentiation of latent traits
+
+---
+name: MI procedure
+class: center, inverse, middle
+
+# .fancy[What is the MI procedure?]
+
+---
+## .center[Sequence of Tests for MI]
+
+--
+
+### Step 0:Omnibus test of equality of the overall indicator covariance matrix across groups
+
+* Step 0.1: CFA goodness-of-fit test for each group
+* Step 0.2: Omnibus test of equality of the overall indicator covariance matrix across groups
+
+--
+
+### Measurement invariance:
+
+--
+
+* Step 1/Level 1: Configural invariance (Equal factor structure )
+* Step 2/Level 2: Metric / Weak factorial invariance (Equal factor loadings)
+* Step 3/Level 3: Scalar / strong factorial invariance (Equal indicator intercepts)
+* Step 4/Level 4: Strict factorial invariance (Equal indicator residuals) 
+
+---
+## .center[Sequence of Tests for struactual invariance]
+
+--
+
+### Step 0:Omnibus test of equality of the overall indicator covariance matrix across groups
+
+* Step 0.1: CFA goodness-of-fit test for each group
+* Step 0.2: Omnibus test of equality of the overall indicator covariance matrix across groups
+
+--
+
+### Structural Invariance: 
+
+--
+
+* Step 1: Factor variance invariance
+* Step 2: Factor covariance invariance
+* Step 3: Factor means invariance 
+
+#### .center[ <span style="color: red;">It is OK if structural invariance doesn’t hold.<span/> ]
+
+---
+## .center[Sequence of Tests for MI (cont.)]
+
+--
+
+
+```{r fig3, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/cfa_model_example.PNG", error = FALSE)
+
+```
+
+
+---
+
+## .center[Sequence of Tests for MI (cont.)]
+
+--
+
+Step 0:Omnibus test of equality of the overall indicator covariance matrix across groups 
+
+--
+
+Step 0.1: CFA goodness-of-fit test for each group
+
+ - Does the model fit within each groups?
+    - If not, stop. The MI cannot go further. 
+    - If yes, go to step 0.2.
+
+--
+
+Step 0.2: Omnibus test of equality of the overall indicator covariance matrix across groups 
+
+ - Do the matrices differ between groups, on the whole?
+ - If there is **no difference**. The invariance is confirmed. Congratulations!
+ 
+--
+
+The omnibus test compares the **full saturated covariance** matrix for both groups  
+
+ - This test is likely to be rejected due to the strictness of its constraints – but if not, the process stops!
+
+--
+
+Many people disagree with the necessity or usefulness of this test to begin testing invariance.
+
+---
+name: Step1
+class: center, middle, inverse
+background-image: url(img/front3.jpg)
+background-size: cover
+
+# Configural invariance
+---
+
+## .center[Step 1: configural invariance]
+
+--
+
+Appropriate scales for the observed variables and the factors: 
+
+--
+
+- How the scale should be set up for the factors so that a factor will be the same on the two groups/occasions?
+
+--
+
+- Two ways to set up scale:
+
+--
+
+  - One factor loading ( $\lambda_{x_{1}} = 1$ ) from an observed variable for each factor equal to one `r emo::ji("heavy_check_mark")`
+  
+--
+
+  - Factor variance equal to one ( $var_{x_{1}} = 1$ )
+      - This is not the solution, because we need 2 matrices from two groups have the same scales and if we set up factor variance equal to one, these two matrices are not in the same scale and cannot be compared across groups. 
+
+---
+## .center[configural invariance (cont.)]
+
+--
+
+Are groups having the same factor structure, broadly construed?
+
+--
+
+- Same number of factors, same pattern of zero and non-zero loadings
+
+--
+
+- same conceptual definition of constructs being measured
+
+--
+
+- Estimate a combined model in which all model parameters are allowed to differ across groups
+
+--
+
+  - This will be the baseline model for further comparisons
+  - Model $\chi^2$ and $df$ will be additive across groups
+
+---
+## .center[configural invariance (cont.)]
+
+--
+
+```{r fig4, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/configural_example.PNG", error = FALSE)
+
+```
+
+---
+name: Step2
+class: center, middle, inverse
+background-image: url(img/front4.jpg)
+background-size: cover
+
+# Metric/Weak factorial invariance
+
+---
+name: Metric/Weak Factorial Invariance
+
+## .center[Step 2: metric/weak factorial invariance] 
+
+--
+
+- Are groups having the **same factor loadings**?
+
+  - Each **congeneric item** is still allowed to have a different loading
+  - Loadings for same item are constrained to equality across groups
+
+--
+
+- **Marker items** (that are fixed=1 for identification) are assumed invariant –  because they are already fixed, they cannot be tested
+  - Proposed Solution: For this reason, estimate all factor loadings, but **fix the factor variance(s) to 1 in the reference group only** (still free them in the alternative group)
+  
+  - This allows us to evaluate ALL loadings and still identify the model
+
+--
+
+- Compare fit of metric invariance to configural invariance model:
+
+  - Does the model fit not get worse **( $‐2\Delta LL$ diff not significant)**?
+     - The parameters are taking away, so the model fit can only get worse…
+     - Don’t forget to **fix variance = 1** in reference group only (free in other group)! Otherwise you are imposing a structural constraint too by accident!
+
+---
+name: Metric/weak factorial invariance2
+
+## .center[Metric/weak factorial invariance (cont.)] 
+
+--
+
+
+```{r fig5, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/metric_example.PNG", error = FALSE)
+
+```
+---
+name: Step3
+class: center, middle, inverse
+background-image: url(img/front5.jpg)
+background-size: cover
+
+# Scalar/Strong factorial invariance
+
+---
+name: Scalar/Strong factorial invariance
+
+## .center[Step 3: scalar/strong factorial invariance] 
+
+--
+
+- Are groups having the same item intercepts?
+
+  - Each congeneric item is allowed to have a different intercept
+  - Intercepts for same item are constrained to equality across groups
+
+--
+
+- Estimate all intercepts, but **constrain the factor mean(s) to 0 in the reference group** so we can evaluate all intercepts
+
+--
+
+- Only test those intercepts for which metric invariance holds 
+
+--
+
+- Compare fit of scalar invariance to metric invariance model:
+  - Does the model fit not get worse **( $‐2\Delta LL$ diff not significant)**?
+
+---
+name: Scalar/Strong Factorial Invariance2
+
+## .center[Scalar/strong factorial invariance (cont.)] 
+
+--
+
+```{r fig6, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/scalar_example.PNG", error = FALSE)
+
+```
+
+---
+name: Step4
+class: center, middle, inverse
+background-image: url(img/front6.jpg)
+background-size: cover
+
+# Resitual/strict factorial invariance
+
+---
+
+name: Residual/Strict Factorial Invariance
+
+## .center[Step 4: residual/strict factorial invariance] 
+
+--
+
+- Are groups having the same item residual variances?
+
+  - Each congeneric item is still allowed to have a different residual variance
+  - Residual variances for the same item are constrained to equality across groups
+  - Testing residual variances is the last step in assessing measurement invariance
+
+--
+
+- Only test those residual variances for which metric and scalar invariance already hold
+
+--
+
+- Compare fit of residual invariance to scalar invariance model:
+  - Does the model fit not get worse **( $‐2\Delta LL$ diff not significant)**?
+
+---
+name: Residual/Strict Factorial Invariance2
+
+## .center[Residual/strict factorial invariance (cont.)] 
+
+--
+
+```{r fig7, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/residual_example.PNG", error = FALSE)
+
+```
+
+---
+name: Structural Invariance
+
+## .center[Structural invariance]
+
+--
+
+- Next, Structural Invariance will be tested if needed.
+
+--
+
+  - Are the factor variances the same across groups?
+  - Is the factor covariance the same across groups?
+  - Are the factor means the same across groups?
+
+--
+
+- It is OK if structural invariance doesn’t hold!
+
+--
+
+.center[Not covered in this presentation]
+
+--
+
+---
+name: Conclusion
+
+## .center[Conclusion] 
+
+--
+
+- The process of testing factorial invariance has two distinct parts:
+ 
+  - Measurement invariance: Is your construct being measured in the same way? Let’s hope so!
+
+--
+
+  - Structural invariance: Do your groups differ in their distribution and/or means of the construct? 
+        - Structural differences are real and interpretable differences given measurement invariance of the constructs
+
+--
+
+- Measurement invariance is always assumed in any statistical analysis…
+ But can be tested explicitly in a latent trait modeling framework
+
+
+---
+class: center, middle
+
+# Thanks!
+
+
+
+
+
+
+
+
+
+
+
