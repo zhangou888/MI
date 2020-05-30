@@ -1,0 +1,240 @@
+---
+title: "Measurement invariance in SAS"
+subtitle: "Use SAS for MI in CFA"
+author: "Ou Zhang"
+date: "2014/06/12 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/sfah.css", "css/fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "https://platform.twitter.com/widgets.js"
+    seal: false 
+    includes:
+      in_header: header.html
+---
+```{r set-global-options, echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, 
+                      echo = FALSE, 
+                      cache = FALSE,
+                      include = TRUE,
+                      collapse = FALSE,
+                      dependson = NULL,
+                      engine = "R", # Chunks will always have R code, unless noted
+                      error = TRUE)
+```
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+# options(knitr.table.format = "html")
+library(devtools)
+# install_github("rstudio/fontawesome")
+# install_github("hadley/emo")
+# install_github("muan/emojilib")
+library(tidyverse)
+library(fontawesome) # from github: https://github.com/rstudio/fontawesome
+library(DiagrammeR)
+library(emo)
+```
+
+layout: true
+  
+<div class="my-footer"><span>ouzhang.me/talk/mi_in_SAS</span></div>
+
+<!-- this adds the link footer to all slides, depends on my-footer class in css-->
+
+---
+name: xaringan-title
+class: left, inverse, middle
+background-image: url(img/sas4.jpg)
+background-size: cover
+
+# Measurement invariance in SAS
+
+### .fancy[Use SAS program for MI in CFA]
+
+.large[Ou Zhang | Psychometrics conf::2014]
+
+<!-- this ends up being the title slide since seal = FALSE-->
+
+---
+class: right, middle
+
+<img class="circle" src="img/Ou_Zhang.jpg" width="150px"/>
+
+# Find me at...
+
+[`r fa(name = "twitter")` @zhangou](http://twitter.com/zhangou888)  
+[`r fa(name = "github")` @zhangou](http://github.com/zhangou888)  
+[`r fa(name = "link")` ouzhang.me](https://ouzhang.me)  
+[`r fa(name = "paper-plane")` zhangou888@gmail.com](mailto:zhangou888@gmail.com)
+
+---
+
+## .center[Today's Topic]
+
+--
+
+- Example Data
+
+--
+
+- Model 
+
+--
+
+- PROC CALIS 
+
+--
+
+- Lineqs Modeling Language
+
+--
+
+- SAS program
+
+---
+name: what are the components
+class: left, bottom
+background-image: url(img/sas1.jpg)
+background-size: cover
+
+# .fancy[What are the components for MI analysis in SAS?]
+
+---
+
+## .center[Example Data]
+
+--
+
+.pull-left[
+
+```{r fig1, out.width='100%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/example_data.png", error = FALSE)
+
+```
+]
+
+--
+
+.pull-right[
+
+- The example data from the book chapter by Thompson and Green (2006, p.139, Table 5.2, Dataset 2) were borrowed.
+
+
+- The data contains six measured variables aiming to assess preschool children academic (V1-V3) and social school readiness (V4-V6).
+
+- Preschool children were divided into two groups: 
+    - Group 1—day-care 
+    - Group 2—home-care
+
+- Two matrices of means and covariances for Group 1 and Group 2 are used
+
+- The sample sizes are 250 and 150 for Group 1 and Group 2, respectively.
+]
+
+---
+## .center[CFA Model for MI]
+
+--
+
+```{r fig2, out.width='35%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/sas_model_example.png", error = FALSE)
+
+```
+---
+name: PROC CALIS
+
+## .center[PROC CALIS]
+
+--
+
+- The <span style="color: red;">PROC CALIS</span> procedure (**Covariance Analysis of Linear Structural Equations**) estimates parameters and tests the appropriateness of structural equation models using covariance structural analysis. 
+
+--
+
+- Although PROC CALIS was designed to specify linear relations, structural equation modeling (SEM) techniques have the flexibility to test nonlinear trends. CFA is a special case of SEM.
+
+--
+
+- PROC CALIS and options for CFA
+
+  - <span style="color: red;">DATA</span> : specified dataset to be analyzed
+  
+--
+
+  - <span style="color: red;">COV</span>  : covariance matrix
+
+--
+
+  - <span style="color: red;">CORR</span> : correlation matrix
+
+---
+## .center[LINEQS Modeling Language in SAS]
+
+--
+
+- The <span style="color: blue;">LINEQS</span> statement is a main model specification statement that invokes the LINEQS modeling language in SAS.
+
+--
+
+- The syntax for the LINEQS modeling language is as follows:
+
+  - <span style="color: blue;">LINEQS</span> _< equation < , equation . . . > > ;_  
+      - <span style="color: blue;">	VARIANCE</span> _partial-variance-parameters;_
+      - <span style="color: blue;">COV</span> _covariance-parameters ;_
+	    - <span style="color: blue;">MEAN</span> mean-parameters ;
+
+
+---
+## .center[SAS program example]
+
+--
+
+
+```{r fig3, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/sas_program.PNG", error = FALSE)
+
+```
+---
+## .center[SAS Program (combined model)]
+
+--
+
+```{r fig4, out.width='80%', fig.align='center', fig.pos='h', fig.cap='',echo = FALSE}
+
+    knitr::include_graphics("img/sas_program2.PNG", error = FALSE)
+
+```
+---
+name: Open file
+class: center, inverse, middle
+
+# .fancy[Please open the SAS lineqs code for measurement invariance.sas.]
+
+---
+name: Thank you 
+class: center, middle
+background-image: url(img/sas2.jpg)
+background-size: cover
+
+# .fancy[Thank you!]
+
+
+
+
+
+
+
+
+
+
+
